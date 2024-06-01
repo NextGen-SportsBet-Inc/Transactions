@@ -1,0 +1,41 @@
+version: '3.4'
+
+services:
+  transactions_db:
+    container_name: transactions_sql_server  
+    hostname: transactions_db_host
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      - ACCEPT_EULA=y
+      - MSSQL_SA_PASSWORD=${DB_SA_PASSWORD}
+      - MSQL_PID=Express
+    restart: always
+    networks:
+     - transactions-network
+    volumes:
+     - transactions_data:/var/opt/mssql
+
+  transactionsapi:
+    container_name: sportbetinc-transactions-api
+    image: ${DOCKER_REGISTRY-}transactionsapi
+    build:
+      context: .
+      dockerfile: TransactionsAPI/Dockerfile
+    ports:
+      - 5004:5004
+    depends_on:
+     - transactions_db
+    restart: always
+    networks:
+     - microservice-network
+     - transactions-network
+    env_file:
+     - .env
+
+volumes:
+  transactions_data: 
+  
+networks:
+  microservice-network:
+    external: true
+  transactions-network:
