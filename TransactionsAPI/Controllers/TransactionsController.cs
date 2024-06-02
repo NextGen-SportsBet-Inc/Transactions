@@ -18,7 +18,7 @@ namespace TransactionsAPI.Controllers
         private readonly TransactionService _service = transactionService;
 
         [Authorize]
-        [HttpGet("/makeTransaction")]
+        [HttpPost("/makeTransaction")]
         public async Task<IActionResult> MakeTransaction([FromBody] TransactionFormDTO transactionForm)
         {
             //Verify if user exists through message queue

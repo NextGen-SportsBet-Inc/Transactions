@@ -16,5 +16,8 @@ namespace TransactionsAPI.Repositories
         Task RollbackTransaction(Transaction transaction);
 
         Task UpdateAcount(Account account);
+
+        Task<Account> PerformBalanceDeduction(Account account, float currencyToRemove);
+
     }
 }

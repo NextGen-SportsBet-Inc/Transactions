@@ -79,6 +79,33 @@ namespace TransactionsAPI.Repositories
 
         }
 
+        public virtual async Task<Account> PerformBalanceDeduction(Account account, float currencyToRemove)
+        {
+            float newAmount = account.CurrentAmount - currencyToRemove;
+            if (newAmount < 0)
+            {
+                throw new NotEnoughCurrencyException("Can't make the operation - there is not enough currency to debit.");
+            };
+
+            account.CurrentAmount = newAmount;
+
+            Transaction newTransaction = new()
+            {
+                TransactionType = TransactionType.DEBIT,
+                Amount = currencyToRemove,
+                MadeAt = DateTime.UtcNow,
+                Account = account
+            };
+
+            account.Transactions.Add(newTransaction);
+
+            _transactionsContext.Update(account);
+            await _transactionsContext.SaveChangesAsync();
+
+            return account;
+
+        }
+
         public virtual async Task RollbackTransaction(Transaction transaction)
         {
             _transactionsContext.Remove(transaction);

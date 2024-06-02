@@ -50,10 +50,9 @@ namespace SportBetInc.Consumer
                 return;
             }
 
-            account.CurrentAmount -= amountToRemove ?? 0;
-            await _transactionsRepository.UpdateAcount(account);
+            await _transactionsRepository.PerformBalanceDeduction(account, amountToRemove ?? 0);
 
-            response.Success = false;
+            response.Success = true;
 
             await context.RespondAsync(response);
 

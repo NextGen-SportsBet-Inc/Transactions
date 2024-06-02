@@ -23,6 +23,17 @@ namespace TransactionsAPI
 
             // Add services to the container.
 
+            // Database context injection
+            var dbHost = Environment.GetEnvironmentVariable("DB_HOST");
+            var dbName = Environment.GetEnvironmentVariable("DB_NAME");
+            var dbPassword = Environment.GetEnvironmentVariable("DB_SA_PASSWORD");
+            var connectionString = $"Data Source={dbHost}; Initial Catalog={dbName}; User ID=sa; Password={dbPassword}; TrustServerCertificate=True";
+            builder.Services.AddDbContext<TransactionsDbContext>(options =>
+                options.UseSqlServer(connectionString));
+
+            builder.Services.AddScoped<ITransactionsRepository, TransactionsRepository>();
+            IdentityModelEventSource.ShowPII = true;
+
             // Mass transit
             builder.Services.AddMassTransit(x =>
             {
@@ -33,8 +44,6 @@ namespace TransactionsAPI
 
                 x.UsingRabbitMq((context, cfg) =>
                 {
-                    x.SetKebabCaseEndpointNameFormatter();
-
                     cfg.Host(new Uri("" + Environment.GetEnvironmentVariable("RabbitMQConnectionURI")), h =>
                     {
                         h.Username("" + Environment.GetEnvironmentVariable("RabbitUser"));
@@ -47,17 +56,6 @@ namespace TransactionsAPI
             });
             builder.Services.AddScoped<TransactionService>();
             builder.Services.AddControllers();
-
-            // Database context injection
-            var dbHost = Environment.GetEnvironmentVariable("DB_HOST");
-            var dbName = Environment.GetEnvironmentVariable("DB_NAME");
-            var dbPassword = Environment.GetEnvironmentVariable("DB_SA_PASSWORD");
-            var connectionString = $"Data Source={dbHost}; Initial Catalog={dbName}; User ID=sa; Password={dbPassword}; TrustServerCertificate=True";
-            builder.Services.AddDbContext<TransactionsDbContext>(options =>
-                options.UseSqlServer(connectionString));
-
-            builder.Services.AddScoped<ITransactionsRepository, TransactionsRepository>();
-            IdentityModelEventSource.ShowPII = true;
 
             //keycloak
             builder.Configuration.AddEnvironmentVariables();
