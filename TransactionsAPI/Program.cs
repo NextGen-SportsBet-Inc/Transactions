@@ -9,6 +9,7 @@ using TransactionsAPI.Data;
 using TransactionsAPI.Repositories;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using SportBetInc.Consumer;
 
 namespace TransactionsAPI
 {
@@ -27,7 +28,8 @@ namespace TransactionsAPI
             {
                 x.SetKebabCaseEndpointNameFormatter();
 
-                //x.AddConsumer<VerifyUserConsumer>();
+                x.AddConsumer<CheckAmountConsumer>();
+                x.AddConsumer<RemoveAmountConsumer>();
 
                 x.UsingRabbitMq((context, cfg) =>
                 {

@@ -59,12 +59,10 @@ namespace TransactionsAPI.Repositories
             
             if (transactionForm.TransactionType == TransactionType.CREDIT) 
             {
-                Console.WriteLine("in credit");
                 newAmount += transactionForm.Amount;
             }
             else if (transactionForm.TransactionType == TransactionType.DEBIT) 
             {
-                Console.WriteLine("in credit");
                 newAmount -= transactionForm.Amount;
                 if (newAmount < 0) 
                 {
@@ -72,11 +70,7 @@ namespace TransactionsAPI.Repositories
                 };
             };
 
-            Console.WriteLine("New amount: " + newAmount.ToString());
-
             account.CurrentAmount = newAmount;
-
-            Console.WriteLine("Amount in account: " + account.CurrentAmount.ToString());
 
             _transactionsContext.Update(account);
             await _transactionsContext.SaveChangesAsync();
@@ -90,6 +84,12 @@ namespace TransactionsAPI.Repositories
             _transactionsContext.Remove(transaction);
             await _transactionsContext.SaveChangesAsync();
         } 
+
+        public virtual async Task UpdateAcount(Account account)
+        {
+            _transactionsContext.Update(account);
+            await _transactionsContext.SaveChangesAsync();
+        }
 
 
         //auxiliar functions to reduce code duplication

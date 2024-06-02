@@ -14,5 +14,7 @@ namespace TransactionsAPI.Repositories
         Task<Account> UpdateAccountBalance(Account account, TransactionFormDTO transactionForm);
 
         Task RollbackTransaction(Transaction transaction);
+
+        Task UpdateAcount(Account account);
     }
 }
