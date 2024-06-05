@@ -13,7 +13,7 @@ namespace TransactionsAPI.Model
 
         public required DateTime MadeAt { get; set; }
 
-        public required float Amount { get; set; }
+        public required double Amount { get; set; }
 
         [JsonIgnore]
         [ForeignKey("AccountId")]

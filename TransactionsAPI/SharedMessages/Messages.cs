@@ -20,7 +20,7 @@
     {
         public bool Error { get; set; }
 
-        public float? Amount { get; set; }
+        public double? Amount { get; set; }
 
     }
 
@@ -44,7 +44,7 @@
     {
         public String? UserId { get; set; }
 
-        public float? AmountToAdd { get; set; }
+        public double? AmountToAdd { get; set; }
     }
 
 
@@ -54,7 +54,7 @@
 
         public required int TeamId { get; set; }
 
-        public required float Odd { get; set; }
+        public required double Odd { get; set; }
     }
 
 }

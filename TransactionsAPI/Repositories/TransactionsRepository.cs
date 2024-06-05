@@ -54,7 +54,7 @@ namespace TransactionsAPI.Repositories
 
         public virtual async Task<Account> UpdateAccountBalance(Account account, TransactionFormDTO transactionForm)
         {
-            float newAmount = account.CurrentAmount;
+            double newAmount = account.CurrentAmount;
             
             if (transactionForm.TransactionType == TransactionType.CREDIT) 
             {
@@ -80,7 +80,7 @@ namespace TransactionsAPI.Repositories
 
         public virtual async Task<Account> PerformBalanceDeduction(Account account, float currencyToRemove)
         {
-            float newAmount = account.CurrentAmount - currencyToRemove;
+            double newAmount = account.CurrentAmount - currencyToRemove;
             if (newAmount < 0)
             {
                 throw new NotEnoughCurrencyException("Can't make the operation - there is not enough currency to debit.");

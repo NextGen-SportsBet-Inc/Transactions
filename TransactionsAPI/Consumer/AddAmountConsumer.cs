@@ -11,7 +11,7 @@ namespace TransactionsAPI.Consumer
 
         public async Task Consume(ConsumeContext<AddAmountRequest> context)
         {
-            float? amountToAdd = context.Message.AmountToAdd;
+            double? amountToAdd = context.Message.AmountToAdd;
 
             if (context.Message.UserId == null)
             {
@@ -33,7 +33,7 @@ namespace TransactionsAPI.Consumer
                 };
 
                 account.Transactions.Add(newTransaction);
-                account.CurrentAmount = amountToAdd ?? 0;
+                account.CurrentAmount = amountToAdd ?? 0.0;
                 await _transactionsRepository.UpdateAcount(account);
                 return;
             }

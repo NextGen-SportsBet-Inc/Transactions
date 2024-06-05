@@ -9,7 +9,7 @@ namespace TransactionsAPI.Model
 
         public required string UserId { get; set; }
 
-        public required float CurrentAmount { get; set; } = 0;
+        public required double CurrentAmount { get; set; } = 0;
 
         public required DateTime CreatedAt { get; set; }
 

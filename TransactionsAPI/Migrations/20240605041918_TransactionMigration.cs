@@ -18,7 +18,7 @@ namespace TransactionsAPI.Migrations
                     AccountId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     UserId = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CurrentAmount = table.Column<float>(type: "real", nullable: false),
+                    CurrentAmount = table.Column<double>(type: "float", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
@@ -34,7 +34,7 @@ namespace TransactionsAPI.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     TransactionType = table.Column<int>(type: "int", nullable: false),
                     MadeAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Amount = table.Column<float>(type: "real", nullable: false),
+                    Amount = table.Column<double>(type: "float", nullable: false),
                     AccountId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>

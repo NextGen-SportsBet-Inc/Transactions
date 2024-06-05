@@ -33,8 +33,8 @@ namespace TransactionsAPI.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<float>("CurrentAmount")
-                        .HasColumnType("real");
+                    b.Property<double>("CurrentAmount")
+                        .HasColumnType("float");
 
                     b.Property<string>("UserId")
                         .IsRequired()
@@ -56,8 +56,8 @@ namespace TransactionsAPI.Migrations
                     b.Property<int?>("AccountId")
                         .HasColumnType("int");
 
-                    b.Property<float>("Amount")
-                        .HasColumnType("real");
+                    b.Property<double>("Amount")
+                        .HasColumnType("float");
 
                     b.Property<DateTime>("MadeAt")
                         .HasColumnType("datetime2");
