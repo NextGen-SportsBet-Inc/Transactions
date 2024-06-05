@@ -9,6 +9,11 @@ services:
       - ACCEPT_EULA=y
       - MSSQL_SA_PASSWORD=${DB_SA_PASSWORD}
       - MSQL_PID=Express
+    healthcheck:
+      test: [ "CMD-SHELL","/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P ${DB_SA_PASSWORD} -Q 'SELECT 1'" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
     restart: always
     networks:
      - transactions-network
@@ -24,7 +29,8 @@ services:
     ports:
       - 5004:5004
     depends_on:
-     - transactions_db
+       transactions_db:
+          condition: service_healthy
     restart: always
     networks:
      - microservice-network

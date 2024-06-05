@@ -40,4 +40,33 @@
 
     }
 
+    public record AddAmountRequest
+    {
+        public String? UserId { get; set; }
+
+        public float? AmountToAdd { get; set; }
+    }
+
+    public record AddAmountResponse
+    {
+        public bool Success { get; set; }
+
+        public string? ErrorMessage { get; set; }
+
+    }
+
+    public record ChangeBetStatusRequest
+    {
+        public required string MatchId { get; set; }
+
+        public required string TeamId { get; set; }
+    }
+
+    public record ChangeBetStatusResponse
+    {
+        public required string MatchId { get; set; }
+
+        public required string TeamId { get; set; }
+    }
+
 }

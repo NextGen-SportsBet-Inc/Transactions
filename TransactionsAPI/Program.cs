@@ -10,6 +10,7 @@ using TransactionsAPI.Repositories;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using SportBetInc.Consumer;
+using TransactionsAPI.Consumer;
 
 namespace TransactionsAPI
 {
@@ -41,6 +42,7 @@ namespace TransactionsAPI
 
                 x.AddConsumer<CheckAmountConsumer>();
                 x.AddConsumer<RemoveAmountConsumer>();
+                x.AddConsumer<AddAmountConsumer>();
 
                 x.UsingRabbitMq((context, cfg) =>
                 {
@@ -51,6 +53,11 @@ namespace TransactionsAPI
                     });
 
                     cfg.ConfigureEndpoints(context);
+
+                    cfg.ReceiveEndpoint("add-currency", e =>
+                    {
+                        e.ConfigureConsumer<AddAmountConsumer>(context);
+                    });
                 });
 
             });
@@ -97,7 +104,7 @@ namespace TransactionsAPI
                                 Id="Bearer"
                             }
                         },
-                        new string[]{}
+                        Array.Empty<string>()
                     }
                 });
 

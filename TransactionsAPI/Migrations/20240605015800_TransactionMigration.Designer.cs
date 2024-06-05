@@ -12,15 +12,15 @@ using TransactionsAPI.Data;
 namespace TransactionsAPI.Migrations
 {
     [DbContext(typeof(TransactionsDbContext))]
-    [Migration("20240531230227_TransactionsMigration")]
-    partial class TransactionsMigration
+    [Migration("20240605015800_TransactionMigration")]
+    partial class TransactionMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.5")
+                .HasAnnotation("ProductVersion", "8.0.6")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -56,7 +56,7 @@ namespace TransactionsAPI.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TransactionId"));
 
-                    b.Property<int>("AccountId")
+                    b.Property<int?>("AccountId")
                         .HasColumnType("int");
 
                     b.Property<float>("Amount")
@@ -79,9 +79,7 @@ namespace TransactionsAPI.Migrations
                 {
                     b.HasOne("TransactionsAPI.Model.Account", "Account")
                         .WithMany("Transactions")
-                        .HasForeignKey("AccountId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("AccountId");
 
                     b.Navigation("Account");
                 });

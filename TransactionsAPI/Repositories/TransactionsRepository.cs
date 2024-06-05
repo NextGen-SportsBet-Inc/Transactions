@@ -39,7 +39,6 @@ namespace TransactionsAPI.Repositories
             
             if (account == null) { return null; }
 
-
             Transaction newTransaction = new ()
             {
                 TransactionType = transactionForm.TransactionType,

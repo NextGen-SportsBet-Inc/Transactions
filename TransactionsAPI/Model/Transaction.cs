@@ -19,4 +19,5 @@ namespace TransactionsAPI.Model
         [ForeignKey("AccountId")]
         public Account? Account { get; set; }
     }
+
 }
