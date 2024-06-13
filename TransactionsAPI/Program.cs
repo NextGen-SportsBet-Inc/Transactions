@@ -11,6 +11,12 @@ using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using SportBetInc.Consumer;
 using TransactionsAPI.Consumer;
+using OpenTelemetry.Resources;
+using OpenTelemetry.ResourceDetectors.Container;
+using OpenTelemetry.ResourceDetectors.Host;
+using OpenTelemetry.Logs;
+using OpenTelemetry.Trace;
+using OpenTelemetry.Metrics;
 
 namespace TransactionsAPI
 {
@@ -23,6 +29,43 @@ namespace TransactionsAPI
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
+            //open telemetry
+            builder.Logging.ClearProviders();
+            builder.Logging.AddConsole();
+            builder.Logging.AddOpenTelemetry(options =>
+            {
+                options.AddOtlpExporter(otlpOptions =>
+                {
+                    otlpOptions.Endpoint = new Uri("" + Environment.GetEnvironmentVariable("OTEL_uri"));
+                });
+            });
+
+            static void addResource(ResourceBuilder resourceBuilder)
+            {
+                resourceBuilder.AddService("BettingAPI");
+            }
+
+            builder.Services
+                .AddOpenTelemetry()
+                .ConfigureResource(addResource)
+                .WithTracing(tracerBuilder => tracerBuilder
+                    .AddAspNetCoreInstrumentation()
+                    .AddHttpClientInstrumentation()
+                    .AddOtlpExporter(opt =>
+                    {
+                        opt.Endpoint = new Uri("" + Environment.GetEnvironmentVariable("OTEL_uri"));
+                    })
+                )
+                .WithMetrics(meterBuilder => meterBuilder
+                    .AddProcessInstrumentation()
+                    .AddHttpClientInstrumentation()
+                    .AddRuntimeInstrumentation()
+                    .AddAspNetCoreInstrumentation()
+                    .AddOtlpExporter(opt =>
+                    {
+                        opt.Endpoint = new Uri("" + Environment.GetEnvironmentVariable("OTEL_uri"));
+                    })
+            );
 
             // Database context injection
             var dbHost = Environment.GetEnvironmentVariable("DB_HOST");
@@ -63,6 +106,31 @@ namespace TransactionsAPI
             });
             builder.Services.AddScoped<TransactionService>();
             builder.Services.AddControllers();
+
+            Action<ResourceBuilder> appResourceBuilder =
+                resource => resource
+                    .AddDetector(new ContainerResourceDetector())
+                    .AddDetector(new HostDetector());
+
+            builder.Logging
+                .AddOpenTelemetry(options => options.AddOtlpExporter())
+                .AddConsole();
+
+            builder.Services.AddOpenTelemetry()
+                .ConfigureResource(appResourceBuilder)
+
+                .WithTracing(tracerBuilder => tracerBuilder
+                    .AddRedisInstrumentation(
+                        options => options.SetVerboseDatabaseStatements = true)
+                    .AddAspNetCoreInstrumentation()
+                    .AddHttpClientInstrumentation()
+                    .AddOtlpExporter())
+
+                .WithMetrics(meterBuilder => meterBuilder
+                    .AddProcessInstrumentation()
+                    .AddRuntimeInstrumentation()
+                    .AddAspNetCoreInstrumentation()
+                    .AddOtlpExporter());
 
             //keycloak
             builder.Configuration.AddEnvironmentVariables();

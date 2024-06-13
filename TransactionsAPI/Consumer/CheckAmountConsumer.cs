@@ -5,9 +5,10 @@ using TransactionsAPI.Repositories;
 
 namespace SportBetInc.Consumer
 {
-    public class CheckAmountConsumer(ITransactionsRepository transactionsRepository) : IConsumer<CheckAmountRequest>
+    public class CheckAmountConsumer(ITransactionsRepository transactionsRepository, ILogger<CheckAmountConsumer> logger) : IConsumer<CheckAmountRequest>
     {
         private readonly ITransactionsRepository _transactionsRepository = transactionsRepository;
+        private readonly ILogger<CheckAmountConsumer> _logger = logger;
 
         public async Task Consume(ConsumeContext<CheckAmountRequest> context)
         {
@@ -37,6 +38,7 @@ namespace SportBetInc.Consumer
             }
 
             response.Amount = account.CurrentAmount;
+            _logger.LogInformation("Sent response to check amount request.");
             await context.RespondAsync(response);
 
             return;
