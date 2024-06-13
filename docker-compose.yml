@@ -1,0 +1,47 @@
+version: '3.4'
+
+services:
+  transactions_db:
+    container_name: transactions_sql_server  
+    hostname: transactions_db_host
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      - ACCEPT_EULA=y
+      - MSSQL_SA_PASSWORD=${DB_SA_PASSWORD}
+      - MSQL_PID=Express
+    healthcheck:
+      test: [ "CMD-SHELL","/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P ${DB_SA_PASSWORD} -Q 'SELECT 1'" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: always
+    networks:
+     - transactions-network
+    volumes:
+     - transactions_data:/var/opt/mssql
+
+  transactionsapi:
+    container_name: sportbetinc-transactions-api
+    image: ${DOCKER_REGISTRY-}transactionsapi
+    build:
+      context: .
+      dockerfile: TransactionsAPI/Dockerfile
+    ports:
+      - 5004:5004
+    depends_on:
+       transactions_db:
+          condition: service_healthy
+    restart: always
+    networks:
+     - microservice-network
+     - transactions-network
+    env_file:
+     - .env
+
+volumes:
+  transactions_data: 
+  
+networks:
+  microservice-network:
+    external: true
+  transactions-network:
