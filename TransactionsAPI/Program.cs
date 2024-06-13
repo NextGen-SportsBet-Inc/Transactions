@@ -42,7 +42,7 @@ namespace TransactionsAPI
 
             static void addResource(ResourceBuilder resourceBuilder)
             {
-                resourceBuilder.AddService("BettingAPI");
+                resourceBuilder.AddService("TransactionsAPI");
             }
 
             builder.Services
